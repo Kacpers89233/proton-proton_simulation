@@ -4,7 +4,6 @@ Symulacja i analiza rozkładów cząstek w zderzeniach proton–proton przy ener
 
 ## Wymagania
 
-- Linux
 - GNU Make
 - `g++` i standard C++17
 - Pythia 8.318 
@@ -25,7 +24,7 @@ z `PATH`, a ROOT przez `root-config` z `PATH`.
 | `analysis.root` | Wynik analizy: 32 histogramy `TH1D` |
 | `plots/` | Wykresy PNG i PDF |
 | `.vscode/c_cpp_properties.json` | Ścieżki nagłówków Pythia i ROOT oraz standard C++17 |
-| `proton-proton_prezentacja_rozkładów.pptx` | Prezentacja rozkładów |
+| `proton-proton_prezentacja_rozkładów.pdf` | Prezentacja rozkładów |
 
 Po kompilacji w katalogu projektu powstają pliki wykonywalne `generate` i `analyze`.
 
