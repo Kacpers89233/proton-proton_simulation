@@ -4,8 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${env:HOME}/cern/pythia8318/include",
-                "/home/kacpers925/cern/root/include"
+                "${env:PYTHIA8}/include",
+                "${env:ROOTSYS}/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

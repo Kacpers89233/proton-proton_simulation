@@ -4,17 +4,20 @@ Symulacja i analiza rozkładów cząstek w zderzeniach proton–proton przy ener
 
 ## Wymagania
 
+- Linux
+- GNU Make
 - `g++` i standard C++17
 - Pythia 8.318 
 - ROOT 6 
 
-`Makefile` nie przypina numeru poprawki ROOT. Wybiera Pythię przez `PYTHIA8`, a ROOT przez `root-config` z `PATH`.
+`Makefile` wybiera Pythię przez zmienną `PYTHIA8` lub `pythia8-config`
+z `PATH`, a ROOT przez `root-config` z `PATH`.
 
 ## Struktura projektu
 
 | Ścieżka | Przeznaczenie |
 | --- | --- |
-| `Makefile` | Buduje `generate` i `analyze`: `g++`, flagi z `pythia8-config` i `root-config`, `-std=c++17` |
+| `Makefile` | Sprawdza zależności, buduje `generate` i `analyze` oraz udostępnia cel `pipeline` |
 | `generate.cc` | Generator Pythia. Zapisuje drzewo zdarzeń do `event.root` |
 | `analyze.cc` | Czyta `event.root`, wypełnia histogramy i zapisuje `analysis.root` |
 | `draw_plots.C` | Czyta `analysis.root` i zapisuje wykresy w `plots/` |
@@ -28,22 +31,38 @@ Po kompilacji w katalogu projektu powstają pliki wykonywalne `generate` i `anal
 
 ## Proces uruchomienia
 
-W katalogu głównym repozytorium wykonaj:
+Sklonuj repozytorium i przejdź do jego katalogu:
 
 ```bash
-# Wymagane tylko wtedy, gdy root-config nie jest dostępny w PATH
-source "$HOME/cern/root/bin/thisroot.sh"
+git clone https://github.com/Kacpers89233/proton-proton_simulation.git
+cd proton-proton_simulation
+```
 
-make generate analyze
+Skonfiguruj ROOT i wskaż katalog instalacji Pythii:
+
+```bash
+source /ścieżka/do/root/bin/thisroot.sh
+export PYTHIA8=/ścieżka/do/pythia8318
+```
+
+Sprawdź zależności, skompiluj programy i uruchom cały proces:
+
+```bash
+make check
+make
+make pipeline
+```
+
+`make` tworzy programy `generate` i `analyze`. `make pipeline` uruchamia
+kolejno generator, analizę i makro tworzące wykresy. `make clean` usuwa
+wyłącznie skompilowane programy.
+
+Poszczególne etapy można również uruchomić osobno:
+
+```bash
 ./generate
 ./analyze
 root -l -b -q draw_plots.C
-```
-
-Jeżeli Pythia znajduje się w innej lokalizacji:
-
-```bash
-make PYTHIA8=/ścieżka/do/pythia generate analyze
 ```
 
 Kolejne etapy tworzą odpowiednio:
@@ -53,6 +72,23 @@ Kolejne etapy tworzą odpowiednio:
 - `draw_plots.C` → `plots/<nazwa_histogramu>.png` i `plots/<nazwa_histogramu>.pdf`.
 
 Programy należy uruchamiać z katalogu głównego, ponieważ korzystają ze ścieżek względnych.
+
+## Konfiguracja edytora
+
+Plik `.vscode/c_cpp_properties.json` korzysta ze zmiennych `PYTHIA8`
+i `ROOTSYS`, dzięki czemu nie zawiera ścieżek zależnych od komputera.
+Konfiguracja jest opcjonalna i nie wpływa na kompilację przez `make`.
+
+Aby narzędzia edytora korzystały z właściwych nagłówków, skonfiguruj
+środowisko przed jego uruchomieniem:
+
+```bash
+source /ścieżka/do/root/bin/thisroot.sh
+export PYTHIA8=/ścieżka/do/pythia8318
+```
+
+Następnie uruchom edytor z tego samego terminala. Zmienne zostaną użyte
+do odnalezienia nagłówków Pythii i ROOT.
 
 ## Uwagi
 
