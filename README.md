@@ -93,4 +93,4 @@ do odnalezienia nagłówków Pythii i ROOT.
 
 Ziarno generatora jest stałe: `Random:setSeed = on` i `Random:seed = 100`.
 
-Pythia zwraca kąt azymutalny w przedziale (−π, π]. Przed zapisem do drzewa wartość ujemna jest zamieniana na dodatnią (`std::fabs`). Tak przekształcone φ trafia do histogramu `hPhi_*` o zakresie 0–π i 64 binach.
+Pythia zwraca kąt azymutalny w przedziale [−π, π]. Przed zapisem do drzewa wartość ujemna jest zamieniana na dodatnią (`std::fabs`). Tak przekształcone φ trafia do histogramu `hPhi_*` o zakresie 0–π i 64 binach.
