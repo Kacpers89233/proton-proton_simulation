@@ -28,49 +28,31 @@ Po kompilacji w katalogu projektu powstają pliki wykonywalne `generate` i `anal
 
 ## Proces uruchomienia
 
-Polecenia należy wykonać w katalogu głównym repozytorium. Programy używają ścieżek względnych `event.root`, `analysis.root` i `plots/`.
-
-Jeżeli `root-config` nie jest w `PATH`, wczytaj środowisko ROOT używane w tym projekcie:
+W katalogu głównym repozytorium wykonaj:
 
 ```bash
+# Wymagane tylko wtedy, gdy root-config nie jest dostępny w PATH
 source "$HOME/cern/root/bin/thisroot.sh"
-```
 
-Kompilacja obu programów:
-
-```bash
-make generate
-make analyze
-```
-
-Inna lokalizacja Pythii:
-
-```bash
-make PYTHIA8=/ścieżka/do/pythia generate
-make PYTHIA8=/ścieżka/do/pythia analyze
-```
-
-Generator:
-
-```bash
+make generate analyze
 ./generate
-```
-`generate` tworzy drzewo i zapisuje je do event.root
-Analiza:
-
-```bash
 ./analyze
-```
-
-`analyze` czyta `event.root` i tworzy `analysis.root`.
-
-Wykresy:
-
-```bash
 root -l -b -q draw_plots.C
 ```
 
-Makro otwiera `analysis.root`, tworzy katalog `plots/` i dla każdego histogramu zapisuje `plots/<nazwa>.png` oraz `plots/<nazwa>.pdf`. Dodatkowo zapisuje wykresy zbiorcze `plots/hN_combined`, `plots/hPt_combined`, `plots/hEta_combined` i `plots/hPhi_combined`, każdy w PNG i PDF.
+Jeżeli Pythia znajduje się w innej lokalizacji:
+
+```bash
+make PYTHIA8=/ścieżka/do/pythia generate analyze
+```
+
+Kolejne etapy tworzą odpowiednio:
+
+- `generate` → `event.root`,
+- `analyze` → `analysis.root`,
+- `draw_plots.C` → `plots/<nazwa_histogramu>.png` i `plots/<nazwa_histogramu>.pdf`.
+
+Programy należy uruchamiać z katalogu głównego, ponieważ korzystają ze ścieżek względnych.
 
 ## Uwagi
 
