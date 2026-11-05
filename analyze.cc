@@ -13,6 +13,17 @@ struct HistConfig {
     double high;
 };
 
+
+/**
+    * @brief Creates all required histograms without filling them.
+    *
+    * Constructs the histograms specified by the configuration and
+    * particle categories, and returns them in a map keyed by histogram name.
+    * Does not fill the histograms
+    *
+    * @return A map containing the newly created, empty histograms.
+    */
+
 std::map<std::string, TH1D> createHistograms(){
     std::map<std::string, TH1D> histograms;
 
@@ -71,6 +82,21 @@ struct EventCounts {
     int nPbar = 0;
 };
 
+/**
+    * @brief Fills the appropriate histograms with data for a single particle.
+    *
+    * Updates the provided histograms using the particle's kinematic properties
+    * (pT, eta, and phi), and increments the corresponding particle counters.
+    * 
+    * @param histograms Reference to the map containing the histograms to fill.
+    * @param counts Reference to the structure storing particle counts.
+    * @param pt Transverse momentum of the particle.
+    * @param eta Pseudorapidity of the particle.
+    * @param phi Azimuthal angle of the particle.
+    * @param pdgId PDG ID identifying the particle species.
+    * @param charged Whether the particle is electrically charged.
+    */
+
 void fill_histogram(
     std::map<std::string, TH1D>& histograms,
     EventCounts& counts,
@@ -80,6 +106,7 @@ void fill_histogram(
     int pdgId,
     bool charged
 ){
+    
     histograms["hPt_all"].Fill(pt);
     histograms["hEta_all"].Fill(eta);
     histograms["hPhi_all"].Fill(phi);

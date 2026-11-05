@@ -28,7 +28,19 @@ const int kCategoryColors[] = {
 };
 const int nCategoryPalette = sizeof(kCategoryNames) / sizeof(kCategoryNames[0]);
 
+/**
+    * @brief Determines the line color based on the category encoded in a histogram name.
+    *
+    * Extracts the category from the substring following the first underscore
+    * in the histogram name and matches it against the predefined category palette.
+    *
+    * @param histName Name of the histogram, expected to contain a category
+    *                 identifier after the first underscore.
+    * @return Color_t Corresponding color from the category palette if a match
+    *                 is found; otherwise, returns kBlack.
+    */
 Color_t category_line_color(const char* histName){
+
     const char* underscore = std::strchr(histName, '_');
     if (!underscore || !underscore[1]) {
         return kBlack;
@@ -43,8 +55,25 @@ Color_t category_line_color(const char* histName){
 
     return kBlack;
 }
-
+/**
+    * @brief Configures the visual appearance and axis labels of a histogram.
+    *
+    * Sets the histogram's line color and width, disables fill, and configures
+    * axis titles, title sizes, and offsets. The line color is determined by
+    * the category index if provided, or by the histogram name otherwise.
+    *
+    * The X-axis title is selected based on the histogram name prefix:
+    * - "hPt_"  : transverse momentum, pT [GeV]
+    * - "hEta_" : pseudorapidity, eta
+    * - "hPhi_" : azimuthal angle, phi [rad]
+    * - "hN_"   : multiplicity, N
+    *
+    * @param h Pointer to the TH1D histogram to configure.
+    * @param categoryIndex Optional category index used to select the line color.
+    *                      If negative, the color is determined from the histogram name.
+    */
 void prepare_histogram(TH1D* h, int categoryIndex = -1){
+
     const Color_t lineColor = (categoryIndex >= 0)
         ? static_cast<Color_t>(kCategoryColors[categoryIndex])
         : category_line_color(h->GetName());
@@ -71,7 +100,22 @@ void prepare_histogram(TH1D* h, int categoryIndex = -1){
     }
 }
 
+
+/**
+    * @brief Draws and saves an individual histogram plot.
+    * 
+    * Creates a canvas for the given histogram, draws it with appropriate
+    * axis settings, and saves the resulting plot as PDF and PNG files.
+    *
+    * The canvas margins and y-axis exponent offset are configured for
+    * consistent plot formatting. Histograms whose names begin with "hN"
+    * or "hPt" are displayed with a logarithmic y-axis, while histograms
+    * beginning with "hPhi_" have their minimum set to zero.
+    *
+    * @param h Pointer to the TH1D histogram to be drawn and exported.
+    */
 void make_and_extract_canvas(TH1D* h){
+
     const char* name = h->GetName();
 
     TCanvas canvas(Form("c_%s", name), name, 800, 600);
@@ -94,6 +138,17 @@ void make_and_extract_canvas(TH1D* h){
     canvas.SaveAs(Form("./plots/%s.png", name));
 }
 
+
+/**
+    * @brief Returns the display title for the specified histogram type.
+    *
+    * Maps the histogram type identifier to its corresponding descriptive title,
+    * including ROOT-style formatting for physics symbols.
+    *
+    * @param kind Histogram type identifier (e.g. "hN", "hPt", "hEta", "hPhi").
+    * @return Corresponding plot title, or the original identifier if no match is found.
+    */
+
 const char* combined_title(const TString& kind){
     if (kind == "hN") {
         return "Multiplicity Combined";
@@ -110,7 +165,19 @@ const char* combined_title(const TString& kind){
     return kind.Data();
 }
 
+/**
+    * @brief Creates and saves a combined plot of available histograms.
+    *
+    * Draws each category as a line on a shared canvas, configures the
+    * y-axis scaling, adds a title and legend, and saves the plot in
+    * PDF and PNG formats.
+    *
+    * @param file ROOT file containing the histograms to be plotted.
+    * @param kind Histogram type identifier used to retrieve histograms
+    *             and determine plot settings and output filenames.
+    */
 void make_and_extract_combined_canvas(TFile& file, const TString& kind){
+
     TH1D* histograms[nCategoryPalette] = {};
     const char* labels[nCategoryPalette] = {};
     int nFound = 0;
@@ -209,6 +276,15 @@ void make_and_extract_combined_canvas(TFile& file, const TString& kind){
     canvas.SaveAs(Form("./plots/%s_combined.png", kind.Data()));
 }
 
+
+/**
+    *@brief Generates individual and combined plots for all histogram types and categories.
+    *
+    * Generates individual and combined plots for all specified histogram types
+    * and categories. Configures ROOT plotting settings, opens the input file,
+    * applies histogram styling, and saves the resulting plots in the output
+    * directory.
+    */
 void draw_plots(){
 
     gROOT->SetBatch(kTRUE);
